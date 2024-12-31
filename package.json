@@ -1,0 +1,27 @@
+{
+  "name": "gdg-bot",
+  "version": "0.0.1",
+  "description": "The bot for the Game Dev Gang discord server.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "deploy": "node deploy.js"
+  },
+  "keywords": [
+    "game",
+    "dev",
+    "development",
+    "gang",
+    "discord",
+    "bot",
+    "djs",
+    "discord.js"
+  ],
+  "author": "eflatmajor",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.7"
+  }
+}
