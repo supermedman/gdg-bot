@@ -97,10 +97,10 @@ export async function handleModalSubmit(interaction) {
         await interaction.followUp({
           content: [
             "## No result found!",
-            "Are you sure you passed a result to `setResult`?",
+            "Are you sure you passed a result to `$()`?",
             "### Example:",
             "```js",
-            'setResult({ result: 42 });',
+            '$(42);',
             "```"
           ].join("\n")
         });
