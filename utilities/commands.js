@@ -1,5 +1,15 @@
+/*
+  Node.js Libraries
+*/
+
 import fs from "node:fs";
 import path from "node:path";
+
+/*
+  Our Dependencies
+*/
+
+import { executeCode } from "../sandbox.js";
 
 /*
   Load all the commands from /commands, and return them.
@@ -32,4 +42,106 @@ export async function loadCommands(directory, client) {
   }
 
   return commands;
+}
+
+/*
+  Handle input commands.
+*/
+export async function handleInputCommand(interaction) {
+  if ( ! interaction.isChatInputCommand()) {
+    return;
+  }
+
+  const command = interaction.client.commands.get(interaction.commandName);
+
+	if ( ! command) {
+		return console.error(`No command matching ${interaction.commandName} was found.`);
+	}
+
+  try {
+		await command.execute(interaction);
+	} catch (error) {
+		console.error(error);
+
+		if (interaction.replied || interaction.deferred) {
+			await interaction.followUp({
+        content: 'There was an error while executing this command!',
+        flags: MessageFlags.Ephemeral
+      });
+		} else {
+			await interaction.reply({
+        content: 'There was an error while executing this command!',
+        flags: MessageFlags.Ephemeral
+      });
+		}
+	}
+}
+
+/*
+  Handle modal submits.
+*/
+export async function handleModalSubmit(interaction) {
+  if ( ! interaction.isModalSubmit()) {
+    return;
+  }
+
+  if (interaction.customId === 'modal-code') {
+    const code = interaction.fields.getTextInputValue("code");
+
+    await interaction.deferReply();
+
+    try {
+      const result = await executeCode(code);
+
+      if (typeof result === 'undefined') {
+        await interaction.followUp({
+          content: [
+            "## No result found!",
+            "Are you sure you passed a result to `setResult`?",
+            "### Example:",
+            "```js",
+            'setResult({ result: 42 });',
+            "```"
+          ].join("\n")
+        });
+        return;
+      }
+
+      await interaction.followUp({
+        content: [
+          "### Input",
+          "```js",
+          code,
+          "```",
+          "### Output",
+          "```js",
+          JSON.stringify(result, null, 4),
+          "```"
+        ].join("\n")
+      });
+    }
+    catch(error) {
+      let errMsg;
+
+      if (error.isTimeout) {
+        errMsg = "Sorry, but your code took too long to run!"
+      }
+      else {
+        errMsg = error?.message ?? "Unknown error.";
+      }
+
+      await interaction.followUp({
+        content: [
+          "### Input",
+          "```js",
+          code,
+          "```",
+          "### Error",
+          "```",
+          errMsg,
+          "```"
+        ].join("\n")
+      });
+    }
+	}
 }

@@ -15,7 +15,11 @@ import { Client, Collection, Events, GatewayIntentBits } from "discord.js";
   Our Dependencies
 */
 
-import { loadCommands } from "./utilities/commands.js";
+import {
+  handleInputCommand,
+  handleModalSubmit,
+  loadCommands
+} from "./utilities/commands.js";
 
 /*
   Constants
@@ -41,37 +45,12 @@ client.commands = new Collection();
 await loadCommands(COMMANDS_PATH, client);
 
 client.once(Events.ClientReady, readyClient => {
-	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+	console.log(`[INFO] Ready! Logged in as ${readyClient.user.tag}`);
 });
 
 client.on(Events.InteractionCreate, async interaction => {
-  if ( ! interaction.isChatInputCommand()) {
-    return;
-  }
-
-  const command = interaction.client.commands.get(interaction.commandName);
-
-	if ( ! command) {
-		return console.error(`No command matching ${interaction.commandName} was found.`);
-	}
-
-  try {
-		await command.execute(interaction);
-	} catch (error) {
-		console.error(error);
-
-		if (interaction.replied || interaction.deferred) {
-			await interaction.followUp({
-        content: 'There was an error while executing this command!',
-        flags: MessageFlags.Ephemeral
-      });
-		} else {
-			await interaction.reply({
-        content: 'There was an error while executing this command!',
-        flags: MessageFlags.Ephemeral
-      });
-		}
-	}
+  handleInputCommand(interaction);
+  handleModalSubmit(interaction);
 });
 
 client.login(DISCORD_TOKEN);
