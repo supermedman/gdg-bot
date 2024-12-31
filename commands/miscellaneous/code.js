@@ -1,16 +1,17 @@
 import "dotenv/config";
 import { SlashCommandBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 
-const { ADMINISTRATOR_ID } = process.env;
+const { EVAL_WHITELIST } = process.env;
+const WHITELIST = EVAL_WHITELIST.split(",");
 
 const data = new SlashCommandBuilder()
   .setName('code')
   .setDescription('Execute JavaScript code.');
 
 async function execute(interaction) {
-  // if (interaction.user.id !== ADMINISTRATOR_ID) {
-  //   return await interaction.reply('You do not have permission to run this command.');
-  // }
+  if ( ! WHITELIST.includes(interaction.user.id)) {
+    return await interaction.reply('You do not have permission to run this command.');
+  }
 
   const modalCode = new ModalBuilder()
     .setCustomId('modal-code')
