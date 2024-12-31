@@ -15,38 +15,11 @@ async function execute(interaction) {
   await interaction.reply({ embeds: [embed] });
 }
 
-/*
-{
-  "cover_image": "https://img.itch.zone/aW1nLzE5MTgyNjE4LnBuZw==/315x250%23c/YQVwOX.png",
-  "links": {
-    "comments": "https://jaogwal.itch.io/abstrala-alpha-demo/comments",
-    "self": "https://jaogwal.itch.io/abstrala-alpha-demo",
-    "devlog": "https://jaogwal.itch.io/abstrala-alpha-demo/devlog"
-  },
-  "id": 3152430,
-  "tags": [
-    "colorful",
-    "controller",
-    "flying",
-    "no-ai",
-    "simulation",
-    "space"
-  ],
-  "authors": [
-    {
-      "name": "jaogwal",
-      "url": "https://jaogwal.itch.io"
-    }
-  ],
-  "title": "Abstrala (alpha demo)"
-}
-*/
 function createEmbed(json) {
   const { tags, title, links, authors, cover_image } = json;
   const author = authors[0];
 
   return new EmbedBuilder()
-    // .setColor(0x0099FF)
     .setTitle(title)
     .setURL(links.self)
     .setAuthor({
@@ -55,7 +28,6 @@ function createEmbed(json) {
       url: author.url
     })
     .setDescription('3D space flyer chasing targets through a randomized colorscape')
-    // .setThumbnail('https://i.imgur.com/AfFp7pu.png')
     .addFields(
       { name: '\u200B', value: `[View Comments](${links.comments})`, inline: true },
       { name: '\u200B', value: `[View DevLog](${links.devlog})`, inline: true }
