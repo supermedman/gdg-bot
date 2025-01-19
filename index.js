@@ -44,7 +44,7 @@ const COMMANDS_PATH = path.join(__dirname, 'commands');
   Client Initialisation & Events
 */
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent] });
 client.commands = new Collection();
 client.activeHooks = new Collection();
 
